@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">JansamparkAdmin</string>
+    <string name="pensing">प्रलंबित</string>
+    <string name="rejected">नाकारले</string>
+    <string name="solved">पूर्ण</string>
+    <string name="total">Total</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="village_list">Village List</string>
+    <string name="complaint_list">"तक्रार यादी"</string>
+    <string name="complaint_details">"तक्रार"</string>
+
+</resources>
