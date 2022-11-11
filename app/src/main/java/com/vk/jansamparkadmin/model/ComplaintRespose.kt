@@ -7,16 +7,18 @@ data class ComplaintResponse(
     val status: Int
 )
 
+
 data class ComplaintModel(
-    val attachments: String,
+    val attachments: String?,
+    val categorie: String,
     val categorie_id: String,
+    val comments: List<String>,
     val coordinator_id: Int,
     val id: Int,
-    val isurgent: Int,
+    var isurgent: Int,
     val mobileno: String,
     val ticket_date: String,
     val ticket_exp: String,
     val ticket_status: String,
-    val villagename: String,
-    val comments: ArrayList<Comment>? = ArrayList(),
+    val villagename: String
 )

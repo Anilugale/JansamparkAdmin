@@ -54,7 +54,7 @@ fun ComplaintList(name: String, navigator: NavHostController) {
                 }
 
             },
-            navigationIcon = if (navigator?.previousBackStackEntry != null) {
+            navigationIcon = if (navigator.previousBackStackEntry != null) {
                 {
                     IconButton(onClick = { navigator.navigateUp() }) {
                         Icon(
@@ -170,7 +170,7 @@ fun ShowCommentItem(model: ComplaintModel, navigatorController: NavHostControlle
                 .padding(10.dp)
         ) {
 
-            model.isurgent?.let {
+            model.isurgent.let {
                 if (it == 1) {
                     Text(
                         text = "URGENT",

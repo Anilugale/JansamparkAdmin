@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Attachment
 import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.PriorityHigh
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -36,6 +37,7 @@ import com.vk.jansamparkadmin.model.Comment
 import com.vk.jansamparkadmin.ui.theme.*
 import com.vk.jansamparkadmin.ui.viewmodel.ComplaintDetailsVM
 import com.vk.jansamparkadmin.ui.viewmodel.DetailsState
+import com.vk.jansamparkadmin.ui.viewmodel.MarkImportant
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -75,6 +77,9 @@ fun ComplaintDetails(id: String, navigatorController: NavHostController?) {
     }
     val coroutineScope = rememberCoroutineScope()
 
+    val showProgressDailog = remember {
+        mutableStateOf(false)
+    }
 
 
 
@@ -145,7 +150,27 @@ fun ComplaintDetails(id: String, navigatorController: NavHostController?) {
         ) {
             LazyColumn(state = listState) {
                 item(key = "header") {
-                    ShowCommentItem(comment!!, null)
+                    Column {
+                        ShowCommentItem(comment!!, null)
+                        if(comment.isurgent !=1){
+                            OutlinedButton(
+                                onClick = {
+                                    model.markThisImportant(comment)
+                                    showProgressDailog.value = true
+                                },
+                                modifier = Modifier
+                                    .padding(10.dp)
+                                    .align(Alignment.End)
+                            ) {
+                                Icon(imageVector = Icons.Outlined.PriorityHigh, contentDescription = "")
+                                Text(
+                                    text = "Important",
+                                    color = MaterialTheme.colors.primary,
+                                    fontSize = 13.sp,
+                                )
+                            }
+                        }
+                    }
                 }
                 when (value1) {
 
@@ -176,11 +201,18 @@ fun ComplaintDetails(id: String, navigatorController: NavHostController?) {
 
                     is DetailsState.Success -> {
                         items(value1.commentList.size, key = { it }) {
-                            CommentItem(
-                                model = value1.commentList[it],
-                                clickID = clickID,
-                                modalBottomSheetState,
-                                coroutineScope
+                            val color = if (isSystemInDarkTheme()) {
+                                FontColor1Dark
+                            } else {
+                                FontColor1
+                            }
+                            Text(
+                                text = value1.commentList[it],
+                                color = color,
+                                fontSize = 14.sp,
+                                modifier = Modifier
+                                    .padding(10.dp)
+                                    .fillMaxWidth()
                             )
                         }
                     }
@@ -199,8 +231,49 @@ fun ComplaintDetails(id: String, navigatorController: NavHostController?) {
             }
         }
 
+        val showAlertDailog = remember {
+            mutableStateOf(false)
+        }
+
+        val showAlertDailogMsg= remember {
+            mutableStateOf("")
+        }
+
+        when (val state = viewModel.value.stateExposeMark.collectAsState().value) {
+            MarkImportant.Empty -> {
+
+            }
+            is MarkImportant.Failed -> {
+                LaunchedEffect(key1 = state) {
+                    showProgressDailog.value = false
+                    showAlertDailogMsg.value = state.msg
+                    showAlertDailog.value = true
+                }
+            }
+            is MarkImportant.Success -> {
+                LaunchedEffect(key1 = state) {
+                    showAlertDailogMsg.value = state.msg
+                    showProgressDailog.value = false
+                    showAlertDailog.value = true
+                }
+            }
+        }
+
+        if (showProgressDailog.value) {
+            ShowProgressDialog {
+                showProgressDailog.value = false
+            }
+        }
+
+        if (showAlertDailog.value) {
+            ShowAlertDialog(showAlertDailogMsg.value) {
+                showAlertDailog.value = false
+            }
+        }
+
     }
 }
+
 
 
 @OptIn(ExperimentalMaterialApi::class)

@@ -22,4 +22,7 @@ interface Service {
     suspend fun getComplaintList(@Body model: ComplaintReq): Response<ComplaintResponse>
 
 
+
+    @POST(Constants.markcomplainturgent)
+    suspend fun markAsUrgent(@Body model:MarkAsUrgentReq): Response<MarkAsUrgentResponse>
 }

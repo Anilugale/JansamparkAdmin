@@ -1,5 +1,6 @@
 package com.vk.jansamparkadmin.ui.screen
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,6 +12,7 @@ import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -40,7 +42,9 @@ fun VillageList(navigator: NavHostController?) {
 
                 val fromDialog = remember { mutableStateOf(false) }
                 val fromDate = remember { mutableStateOf("") }
+                val fromDateCompare = remember { mutableStateOf("") }
                 val toDate = remember { mutableStateOf("") }
+                val toDateCompare = remember { mutableStateOf("") }
                 val toDialog = remember { mutableStateOf(false) }
                 Button(
                     shape = RoundedCornerShape(5.dp),
@@ -73,16 +77,21 @@ fun VillageList(navigator: NavHostController?) {
 
                 }
                 if (fromDate.value.isNotEmpty() && toDate.value.isNotEmpty()) {
-                    Button(
-                        shape = RoundedCornerShape(10.dp),
-                        modifier = Modifier
-                            .padding(horizontal = 2.dp, vertical = 10.dp),
-                        onClick = {
-                            vModel.getTotalCount(VillageFilterReq(fromDate.value, toDate.value))
-                        }) {
-                        Icon(Icons.Outlined.Search, contentDescription = "")
-                        Spacer(modifier = Modifier.width(5.dp))
-                        Text(text = "Search", style = MaterialTheme.typography.body1)
+
+                    if((fromDateCompare.value.compareTo(toDateCompare.value))>0){
+                        LocalContext.current.toast("From Date not less than To date")
+                    }else {
+                        Button(
+                            shape = RoundedCornerShape(10.dp),
+                            modifier = Modifier
+                                .padding(horizontal = 2.dp, vertical = 10.dp),
+                            onClick = {
+                                vModel.getTotalCount(VillageFilterReq(fromDate.value, toDate.value))
+                            }) {
+                            Icon(Icons.Outlined.Search, contentDescription = "")
+                            Spacer(modifier = Modifier.width(5.dp))
+                            Text(text = "Search", style = MaterialTheme.typography.body1)
+                        }
                     }
                 }
 
@@ -90,8 +99,9 @@ fun VillageList(navigator: NavHostController?) {
 
                 if (fromDialog.value) {
                     rememberDatePicker(
-                        {
-                            fromDate.value = it
+                        {date,time->
+                            fromDate.value = date
+                            fromDateCompare.value = time
                             fromDialog.value = false
                         },
                     ) {
@@ -101,8 +111,9 @@ fun VillageList(navigator: NavHostController?) {
 
                 if (toDialog.value) {
                     rememberDatePicker(
-                        {
-                            toDate.value = it
+                        {date,time->
+                            toDate.value = date
+                            toDateCompare.value = time
                             toDialog.value = false
                         },
                     ) {

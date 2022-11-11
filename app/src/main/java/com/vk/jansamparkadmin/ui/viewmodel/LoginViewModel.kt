@@ -22,18 +22,19 @@ class LoginViewModel @Inject constructor(private val service: Service) : ViewMod
             state.value = Status.Progress
             isProcess = true
             viewModelScope.launch(Dispatchers.Main) {
-                val login = service.userLogin(loginReq)
-                if (login.isSuccessful) {
-                    if (login.body() != null) {
-                        state.value = Status.SuccessUser(login.body()!!.data)
-                    } else {
-                        if (login.body() != null) {
-                            state.value = Status.ErrorLogin(login.body()!!.messages)
-                        } else {
-                            state.value = Status.ErrorLogin(login.errorBody().toString())
-                        }
+
+                kotlin.runCatching {
+                     service.userLogin(loginReq)
+                }.onSuccess {
+                    if (it.body() != null && it.body()!!.data!=null) {
+                        state.value = Status.SuccessUser(it.body()!!.data)
+                    }else{
+                        state.value = Status.ErrorLogin(it.body()!!.messages)
                     }
+                }.onFailure {
+                    state.value = Status.ErrorLogin(it.message!!+"")
                 }
+
                 isProcess = false
             }
         }
