@@ -5,5 +5,6 @@ object Constants {
     const val gettotalcount = "api/gettotalcount"
     const val gettotalcountbyvillage = "api/gettotalcountbyvillage"
     const val markcomplainturgent = "api/markcomplainturgent"
+    const val getvillages = "api/getvillages"
 
 }

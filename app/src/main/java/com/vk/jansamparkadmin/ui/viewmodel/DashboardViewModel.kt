@@ -2,6 +2,7 @@ package com.vk.jansamparkadmin.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vk.jansamparkadmin.Cache
 import com.vk.jansamparkadmin.model.Admin
 import com.vk.jansamparkadmin.model.LoginReqModel
 import com.vk.jansamparkadmin.service.Service
@@ -20,6 +21,32 @@ class DashboardViewModel @Inject constructor(private val service: Service) : Vie
 
     init {
         getTotalCount()
+        getVillageList()
+        getComplaintCategory()
+    }
+
+    private fun getVillageList() {
+        viewModelScope.launch{
+            val villageList = service.getVillageList()
+            if (villageList.isSuccessful) {
+                if (villageList.body()!=null) {
+                    Cache.villages = villageList.body()!!.data.villages
+                }
+            }
+
+        }
+    }
+
+    private fun getComplaintCategory() {
+        viewModelScope.launch{
+            val villageList = service.getComplaintCategory()
+            if (villageList.isSuccessful) {
+                if (villageList.body()!=null) {
+                    Cache.complaintCategory = villageList.body()!!.data
+                }
+            }
+
+        }
     }
 
     private fun getTotalCount() {

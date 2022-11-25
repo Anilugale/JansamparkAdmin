@@ -1,6 +1,8 @@
 package com.vk.jansamparkadmin
 
+import com.vk.jansamparkadmin.model.CategoryModel
 import com.vk.jansamparkadmin.model.ComplaintModel
+import com.vk.jansamparkadmin.model.Village
 
 object Cache {
     fun getComplaintFromID(id: Int):ComplaintModel? {
@@ -16,5 +18,6 @@ object Cache {
     }
 
     val commentList = arrayListOf<ComplaintModel>()
-
+    var villages: List<Village> = arrayListOf()
+    var complaintCategory: ArrayList<CategoryModel> = arrayListOf()
 }

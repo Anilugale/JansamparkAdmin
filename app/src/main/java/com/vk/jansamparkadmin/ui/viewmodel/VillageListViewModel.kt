@@ -17,7 +17,7 @@ class VillageListViewModel @Inject constructor(private val service: Service) : V
     val stateExpose = state.asStateFlow()
 
     init {
-        getTotalCount(VillageFilterReq("",""))
+        getTotalCount(VillageFilterReq("","","","","",""))
     }
      fun getTotalCount(model: VillageFilterReq) {
         viewModelScope.launch {
