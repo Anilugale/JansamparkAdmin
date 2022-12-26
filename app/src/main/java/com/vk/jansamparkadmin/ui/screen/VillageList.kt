@@ -160,6 +160,39 @@ fun VillageList(navigator: NavHostController?) {
                 }
 
             },
+            onClear = {
+                isShowFilterDialog.value = !isShowFilterDialog.value
+                fromDate.value = ""
+                toDate.value = ""
+                fromDateCompare.value = ""
+                toDateCompare.value = ""
+                villageName.value = null
+                gatName.value = null
+                selectedComplaint.value = null
+                selectedComplaintStatus.value = ""
+                vModel.getTotalCount(
+                    VillageFilterReq(
+                        fromdate = fromDate.value,
+                        todate = toDate.value,
+                        gat_name = if (gatName.value != null) {
+                            gatName.value!!.gat
+                        } else {
+                            ""
+                        },
+                        village_id = if (villageName.value != null) {
+                            villageName.value!!.id.toString()
+                        } else {
+                            ""
+                        },
+                        complaint_id = if (selectedComplaint.value!=null) {
+                            selectedComplaint.value!!.id
+                        }else{
+                            ""
+                        },
+                        complaint_state = selectedComplaintStatus.value.lowercase()
+                    )
+                )
+            },
             Purple80
         )
     }
@@ -191,7 +224,7 @@ fun VillageItem(villageCount: VillageCount, navigator: NavHostController?) {
             .clickable {
                 navigator?.navigate(
                     Screens.ComplaintList.route + "/${
-                        villageCount.villagename.replace(
+                        villageCount.villageid.replace(
                             "/",
                             "::"
                         )
@@ -251,6 +284,7 @@ private fun ShowPointDialog(
     selectedComplaint: MutableState<CategoryModel?>,
     selectedComplaintStatus: MutableState<String>,
     onDismiss: () -> Unit,
+    onClear: () -> Unit,
     themeColor: Color,
 ) {
     val fromDialog = remember { mutableStateOf(false) }
@@ -456,6 +490,13 @@ private fun ShowPointDialog(
                     horizontalArrangement = Arrangement.End,
                     modifier = Modifier.fillMaxWidth()
                 ) {
+                    TextButton(onClick = onClear) {
+                        Text(
+                            text = "Clear",
+                            color = themeColor,
+                            fontSize = 16.sp
+                        )
+                    }
 
                     TextButton(onClick = onDismiss) {
                         Text(
@@ -480,7 +521,8 @@ fun VillageCountPre() {
             reject_complaints = "5",
             solved_complaints = "10",
             total_complaints = "100",
-            villagename = "Nashik"
+            villagename = "Nashik",
+            villageid = "49"
         ),
         null
     )

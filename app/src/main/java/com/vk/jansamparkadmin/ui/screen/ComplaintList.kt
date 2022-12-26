@@ -73,7 +73,7 @@ fun ComplaintList(name: String, navigator: NavHostController) {
         val vModel: ComplaintListViewModel = hiltViewModel()
 
         LaunchedEffect(key1 = true, block = {
-            vModel.getTotalCount(ComplaintReq(village = name.replace("::","/"), fromdate = "", todate = ""))
+            vModel.getTotalCount(ComplaintReq(village_id = name.replace("::","/"), fromdate = "", todate = ""))
 
         })
         val rememberVm = remember {

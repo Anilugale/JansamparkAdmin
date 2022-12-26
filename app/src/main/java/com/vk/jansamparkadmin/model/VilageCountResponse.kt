@@ -12,5 +12,6 @@ data class VillageCount(
     val reject_complaints: String,
     val solved_complaints: String,
     val total_complaints: String,
-    val villagename: String
+    val villagename: String,
+    val villageid: String
 )
