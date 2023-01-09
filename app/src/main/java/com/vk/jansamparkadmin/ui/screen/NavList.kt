@@ -1,7 +1,9 @@
 package com.vk.jansamparkadmin.ui.screen
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.List
+import androidx.compose.material.icons.outlined.Mail
 import androidx.compose.material.icons.outlined.PieChart
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -16,6 +18,8 @@ sealed class Screens(val route: String, val icon: ImageVector?) {
     object VillageList : Screens("VillageList", Icons.Outlined.List)
     object ComplaintList : Screens("ComplaintList", Icons.Outlined.List)
     object ComplaintDetails : Screens("ComplaintDetails", Icons.Outlined.List)
+    object MessageList : Screens("MessageList", Icons.Outlined.Mail)
+    object AddMessage : Screens("AddMessage", Icons.Outlined.Add)
 }
 
 @Composable
@@ -29,6 +33,8 @@ fun ShowNavGraph(name: String) {
         composable(Screens.Login.route) { LoginScreen(navigator) }
         composable(Screens.Dashboard.route) { Dashboard(navigator) }
         composable(Screens.VillageList.route) { VillageList(navigator) }
+        composable(Screens.MessageList.route) { MessageListView(navigator) }
+        composable(Screens.AddMessage.route) { AddMessageView(navigator) }
         composable(Screens.ComplaintList.route+"/{id}") { ComplaintList(name = it.arguments?.getString("id")!!,navigator) }
         composable(Screens.ComplaintDetails.route+"/{id}") {
             ComplaintDetails(id = it.arguments?.getString("id")!!,navigator) }

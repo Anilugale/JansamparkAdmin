@@ -57,7 +57,6 @@ fun ComplaintDetails(id: String, navigatorController: NavHostController?) {
     LaunchedEffect(key1 = true) {
         model.getList(isProgress = true, comment = comment)
     }
-    Log.d("@@", "ComplaintDetails: ")
     LaunchedEffect(key1 = comment) {
         model.getList(comment = comment)
     }
@@ -152,24 +151,43 @@ fun ComplaintDetails(id: String, navigatorController: NavHostController?) {
                 item(key = "header") {
                     Column {
                         ShowCommentItem(comment!!, null)
-                        if(comment.isurgent !=1){
-                            OutlinedButton(
-                                onClick = {
-                                    model.markThisImportant(comment)
-                                    showProgressDailog.value = true
-                                },
-                                modifier = Modifier
-                                    .padding(10.dp)
-                                    .align(Alignment.End)
-                            ) {
-                                Icon(imageVector = Icons.Outlined.PriorityHigh, contentDescription = "")
-                                Text(
-                                    text = "Important",
-                                    color = MaterialTheme.colors.primary,
-                                    fontSize = 13.sp,
-                                )
+                        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                            if(comment.isurgent !=1){
+                                OutlinedButton(
+                                    onClick = {
+                                        model.markThisImportant(comment)
+                                        showProgressDailog.value = true
+                                    },
+                                    modifier = Modifier
+                                        .padding(10.dp)
+                                ) {
+                                    Icon(imageVector = Icons.Outlined.PriorityHigh, contentDescription = "")
+                                    Text(
+                                        text = "Important",
+                                        color = MaterialTheme.colors.primary,
+                                        fontSize = 13.sp,
+                                    )
+                                }
+                            }
+
+                            if(comment.ticket_status != "Closed"){
+                                OutlinedButton(
+                                    onClick = {
+                                        model.closeComplaint(comment)
+                                        showProgressDailog.value = true
+                                    },
+                                    modifier = Modifier
+                                        .padding(10.dp)
+                                ) {
+                                    Text(
+                                        text = "Closed Complaint/बंद तक्रार",
+                                        color = MaterialTheme.colors.primary,
+                                        fontSize = 13.sp,
+                                    )
+                                }
                             }
                         }
+
                     }
                 }
                 when (value1) {

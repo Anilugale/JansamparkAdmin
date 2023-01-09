@@ -6,7 +6,9 @@
     <string name="total">Total</string>
     <string name="dashboard">Dashboard</string>
     <string name="village_list">Village List</string>
+    <string name="msg_list">Messages</string>
     <string name="complaint_list">"तक्रार यादी"</string>
     <string name="complaint_details">"तक्रार"</string>
+    <string name="add_msg">New Messages</string>
 
 </resources>

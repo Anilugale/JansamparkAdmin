@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -29,6 +28,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.vk.jansamparkadmin.R
 import com.vk.jansamparkadmin.model.CategoryModel
+import com.vk.jansamparkadmin.model.CoordinateModel
 import com.vk.jansamparkadmin.model.Village
 import com.vk.jansamparkadmin.ui.theme.Purple80
 import java.util.*
@@ -112,9 +112,40 @@ fun BottomNavigationBar(navController: NavHostController) {
                     overflow = TextOverflow.Ellipsis
                 )
             },
+
             alwaysShowLabel = false
         )
+        BottomNavigationItem(
 
+            // it currentRoute is equal then its selected route
+            selected = currentRoute == Screens.MessageList.route,
+
+            // navigate on click
+            onClick = {
+                navController.navigate(Screens.MessageList.route) {
+                    popUpTo(0)
+                }
+            },
+
+            // Icon of navItem
+            icon = {
+                Icon(
+                    imageVector = Screens.MessageList.icon!!,
+                    contentDescription = stringResource(id = R.string.msg_list)
+                )
+            },
+
+            // label
+            label = {
+                Text(
+                    text = stringResource(id = R.string.msg_list),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            },
+
+            alwaysShowLabel = false
+        )
 
     }
 
@@ -152,7 +183,7 @@ fun ShowProgressDialog(function: () -> Unit) {
         onDismissRequest = { function() },
         properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
     ) {
-        Card(backgroundColor = Color.White) {
+        Card(backgroundColor = MaterialTheme.colors.surface) {
             Box(contentAlignment = Alignment.Center) {}
             CircularProgressIndicator(
                 modifier = Modifier
@@ -239,7 +270,7 @@ fun DropDownSpinner(
                 isOpen = false
             },
         ) {
-            itemList?.forEachIndexed { index, item ->
+            itemList.forEachIndexed { index, item ->
                 DropdownMenuItem(
                     onClick = {
                         isOpen = false
@@ -323,7 +354,7 @@ fun DropDownSpinner(
                 isOpen = false
             },
         ) {
-            itemList?.forEachIndexed { index, item ->
+            itemList.forEachIndexed { index, item ->
                 DropdownMenuItem(
                     onClick = {
                         isOpen = false
@@ -375,7 +406,7 @@ fun DropDownSpinner(
             .height(ELEMENT_HEIGHT),
         contentAlignment = Alignment.CenterStart
     ) {
-        if (selectedItem == null || selectedItem.isEmpty()) {
+        if (selectedItem.isEmpty()) {
             Text(
                 text = defaultText,
                 modifier = Modifier
@@ -434,3 +465,88 @@ fun DropDownSpinner(
     }
 }
 
+
+
+
+@Composable
+fun DropDownSpinnerCoordinate(
+    modifier: Modifier = Modifier,
+    defaultText: String = "Select...",
+    selectedItem: CoordinateModel?,
+    onItemSelected: (Int, CoordinateModel) -> Unit,
+    itemList: List<CoordinateModel>,
+) {
+    var isOpen by remember { mutableStateOf(false) }
+
+    Box(
+        modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp))
+            .background(MaterialTheme.colors.surface)
+            .height(ELEMENT_HEIGHT),
+        contentAlignment = Alignment.CenterStart
+    ) {
+        if (selectedItem == null || selectedItem.toString().isEmpty()) {
+            Text(
+                text = defaultText,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 10.dp, end = 5.dp, bottom = 3.dp),
+                color = MaterialTheme.colors.onSurface.copy(.45f),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Start
+            )
+        }
+
+        Text(
+            text = selectedItem?.name?:"",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 32.dp, bottom = 3.dp),
+            color = MaterialTheme.colors.onSurface,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.Start
+        )
+
+
+        DropdownMenu(
+            modifier = Modifier.fillMaxWidth(.85f),
+            expanded = isOpen,
+            onDismissRequest = {
+                isOpen = false
+            },
+        ) {
+            itemList.forEachIndexed { index, item ->
+                DropdownMenuItem(
+                    onClick = {
+                        isOpen = false
+                        onItemSelected(index, item)
+                    }
+                ) {
+                    Text(item.name)
+                }
+            }
+        }
+
+        Icon(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .padding(end = 8.dp)
+                .size(24.dp),
+
+            imageVector = Icons.Outlined.ArrowDropDown,
+            contentDescription = "Dropdown"
+        )
+
+        Spacer(
+            modifier = Modifier
+                .matchParentSize()
+                .background(Color.Transparent)
+                .clickable(
+                    onClick = { isOpen = true }
+                )
+        )
+    }
+}

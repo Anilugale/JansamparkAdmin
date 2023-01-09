@@ -2,9 +2,9 @@ package com.vk.jansamparkadmin.service
 
 import com.vk.jansamparkadmin.model.*
 import com.vk.jansamparkadmin.util.Constants
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 
@@ -32,4 +32,16 @@ interface Service {
 
     @POST("api/getcategories")
     suspend fun getComplaintCategory(): Response<ComplaintCategory>
+
+    @GET("api/coordinatorlisting")
+    suspend fun getCoordinateList(): Response<CoOrdinateResposnse>
+
+    @POST("api/sendmsg")
+    suspend fun sendMsg(@Body value: MessageReqModel): Response<MarkAsUrgentResponse>
+
+    @GET("api/getadminmsglist")
+    suspend fun getMsgList(): Response<MessageListResponse>
+
+    @GET("api/closeComplaint")
+    suspend fun closeComplaint(): Response<MessageListResponse>
 }

@@ -19,6 +19,6 @@ data class ComplaintModel(
     val mobileno: String,
     val ticket_date: String,
     val ticket_exp: String,
-    val ticket_status: String,
+    var ticket_status: String,
     val villagename: String
 )
