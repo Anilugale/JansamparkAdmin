@@ -39,9 +39,9 @@ interface Service {
     @POST("api/sendmsg")
     suspend fun sendMsg(@Body value: MessageReqModel): Response<MarkAsUrgentResponse>
 
-    @GET("api/getadminmsglist")
-    suspend fun getMsgList(): Response<MessageListResponse>
+    @POST("api/getadminmsglist")
+    suspend fun getMsgList(@Body messageListReqModel: MessageListReqModel): Response<MessageListResponse>
 
-    @GET("api/closeComplaint")
-    suspend fun closeComplaint(): Response<MessageListResponse>
+    @POST("api/closecomplaint")
+    suspend fun closeComplaint(@Body model: CloseComplaintReq): Response<MessageListResponse>
 }

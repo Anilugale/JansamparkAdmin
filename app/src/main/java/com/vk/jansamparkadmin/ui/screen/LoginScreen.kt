@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.google.gson.Gson
 import com.vk.jansamparkadmin.R
 import com.vk.jansamparkadmin.model.LoginReqModel
 import com.vk.jansamparkadmin.ui.theme.FontColor1
@@ -89,6 +90,7 @@ fun LoginScreen(navigator: NavHostController?) {
             LaunchedEffect(key1 = value) {
                 if (value.user.size == 1) {
                     sharedPreferences.edit().putBoolean("isLogin", true).apply()
+                    sharedPreferences.edit().putString("user", Gson().toJson(value.user[0])).apply()
                     navigator?.navigate(Screens.Dashboard.route)
                 }
             }

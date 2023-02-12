@@ -1,5 +1,6 @@
 package com.vk.jansamparkadmin.ui.screen
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -15,8 +16,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.google.gson.Gson
 import com.vk.jansamparkadmin.Cache
 import com.vk.jansamparkadmin.R
+import com.vk.jansamparkadmin.model.Admin
 import com.vk.jansamparkadmin.model.CoordinateModel
 import com.vk.jansamparkadmin.model.MessageReqModel
 import com.vk.jansamparkadmin.ui.theme.FontColor2
@@ -116,7 +119,23 @@ fun ShowAddMsg(
     val selectedComplaintStatus = remember {
         mutableStateOf<CoordinateModel?>(null)
     }
+    val sharedPreferences = LocalContext.current.getSharedPreferences(
+        stringResource(id = R.string.app_name),
+        Context.MODE_PRIVATE
+    )
+    val string = sharedPreferences.getString("user", null)
 
+    val user = if(string!=null){
+        try {
+            val admin = Gson().fromJson(string, Admin::class.java)
+            admin.name
+        }catch (e:Exception){
+            e.printStackTrace()
+            ""
+        }
+    }else{
+        ""
+    }
     val messageText = remember {
         mutableStateOf("")
     }
@@ -155,7 +174,8 @@ fun ShowAddMsg(
                 vModel?.sendMessage(MessageReqModel(
                     coordinator_id = selectedComplaintStatus.value!!.id.toString(),
                     device_token =selectedComplaintStatus.value!!.deviceId,
-                    message = messageText.value
+                    message = messageText.value,
+                    from = user
                 ))
             },
             modifier = Modifier

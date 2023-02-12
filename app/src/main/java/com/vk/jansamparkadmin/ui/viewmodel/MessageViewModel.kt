@@ -6,8 +6,6 @@ import com.vk.jansamparkadmin.Cache
 import com.vk.jansamparkadmin.model.*
 import com.vk.jansamparkadmin.service.Service
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -20,9 +18,9 @@ class MessageViewModel @Inject constructor(private val service: Service) : ViewM
     val stateExpose = state.asStateFlow()
 
 
-    fun getVillageList() {
+    fun getVillageList(messageListReqModel: MessageListReqModel) {
         viewModelScope.launch{
-            val msgList = service.getMsgList()
+            val msgList = service.getMsgList(messageListReqModel)
             if(msgList.isSuccessful && msgList.body()!=null){
                 if( msgList.body()!!.status == 200){
                     Cache.msgList = msgList.body()!!.data as ArrayList<MessageModel>

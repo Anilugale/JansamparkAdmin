@@ -1,6 +1,7 @@
 package com.vk.jansamparkadmin.ui.screen
 
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
@@ -25,14 +26,18 @@ import androidx.compose.ui.Alignment.Companion.TopEnd
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.google.gson.Gson
 import com.vk.jansamparkadmin.Cache
 import com.vk.jansamparkadmin.R
+import com.vk.jansamparkadmin.model.Admin
+import com.vk.jansamparkadmin.model.CloseComplaintReq
 import com.vk.jansamparkadmin.model.Comment
 import com.vk.jansamparkadmin.ui.theme.*
 import com.vk.jansamparkadmin.ui.viewmodel.ComplaintDetailsVM
@@ -54,6 +59,23 @@ fun ComplaintDetails(id: String, navigatorController: NavHostController?) {
     val viewModel = remember { mutableStateOf(model) }
     val value1 = viewModel.value.stateExpose.collectAsState().value
     val context = LocalContext.current
+    val sharedPreferences = LocalContext.current.getSharedPreferences(
+        stringResource(id = R.string.app_name),
+        Context.MODE_PRIVATE
+    )
+    val string = sharedPreferences.getString("user", null)
+
+    val user = if(string!=null){
+        try {
+            val admin = Gson().fromJson(string, Admin::class.java)
+            admin.name
+        }catch (e:Exception){
+            e.printStackTrace()
+            ""
+        }
+    }else{
+        ""
+    }
     LaunchedEffect(key1 = true) {
         model.getList(isProgress = true, comment = comment)
     }
@@ -173,7 +195,10 @@ fun ComplaintDetails(id: String, navigatorController: NavHostController?) {
                             if(comment.ticket_status != "Closed"){
                                 OutlinedButton(
                                     onClick = {
-                                        model.closeComplaint(comment)
+                                        model.closeComplaint(CloseComplaintReq(
+                                            modifiedby = user,
+                                            ticket_id = comment.id.toString()
+                                        ),comment)
                                         showProgressDailog.value = true
                                     },
                                     modifier = Modifier

@@ -2,6 +2,7 @@ package com.vk.jansamparkadmin.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vk.jansamparkadmin.model.CloseComplaintReq
 import com.vk.jansamparkadmin.model.Comment
 import com.vk.jansamparkadmin.model.ComplaintModel
 import com.vk.jansamparkadmin.model.MarkAsUrgentReq
@@ -62,34 +63,20 @@ class ComplaintDetailsVM @Inject constructor(val service: Service) : ViewModel()
 
     }
 
-    fun closeComplaint(comment: ComplaintModel) {
-        viewModelScope.launch {
-         /*   val markAsUrgent = service.markAsUrgent(
-                MarkAsUrgentReq(
-                    coordinator_id = comment.coordinator_id.toString(),
-                    isurgent = 1,
-                    ticket_id = comment.id
-                )
-            )*/
-
-            viewModelScope.launch {
-                delay(1000)
-                comment.ticket_status = "Closed"
-                stateMark.value = MarkImportant.Success("Complaint Closed!")
+    fun closeComplaint(model: CloseComplaintReq, comment: ComplaintModel) {
+             viewModelScope.launch {
+                 val markAsUrgent = service.closeComplaint(model)
+                 if(markAsUrgent.isSuccessful){
+                     if (markAsUrgent.code() == 200) {
+                         comment.ticket_status = "Closed"
+                         stateMark.value = MarkImportant.Success(markAsUrgent.body()!!.messages!!)
+                     }else{
+                         stateMark.value = MarkImportant.Failed(markAsUrgent.body()!!.messages!!)
+                     }
+                 }else{
+                     stateMark.value = MarkImportant.Failed(markAsUrgent.message())
+                 }
             }
-
-        /*    if(markAsUrgent.isSuccessful){
-                if (markAsUrgent.code() == 200) {
-                    comment.isurgent = 1
-                    stateMark.value = MarkImportant.Success(markAsUrgent.body()!!.messages!!)
-                }else{
-                    stateMark.value = MarkImportant.Failed(markAsUrgent.body()!!.messages!!)
-                }
-            }else{
-                stateMark.value = MarkImportant.Failed(markAsUrgent.message())
-            }*/
-        }
-
     }
 }
 

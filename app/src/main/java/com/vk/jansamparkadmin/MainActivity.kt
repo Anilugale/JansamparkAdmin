@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
                         stringResource(id = R.string.app_name),
                         Context.MODE_PRIVATE
                     )
-                    if (sharedPreferences.getBoolean("isLogin",false)) {
+                    if (sharedPreferences.getBoolean("isLogin",false) && sharedPreferences.getString("user",null) !=null) {
                         ShowNavGraph(Screens.Dashboard.route)
                     }else {
                         ShowNavGraph(Screens.Login.route)
