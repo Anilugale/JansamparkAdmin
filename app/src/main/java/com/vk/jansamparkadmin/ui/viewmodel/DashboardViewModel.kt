@@ -3,8 +3,7 @@ package com.vk.jansamparkadmin.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vk.jansamparkadmin.Cache
-import com.vk.jansamparkadmin.model.Admin
-import com.vk.jansamparkadmin.model.LoginReqModel
+import com.vk.jansamparkadmin.WifiService
 import com.vk.jansamparkadmin.service.Service
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -26,46 +25,55 @@ class DashboardViewModel @Inject constructor(private val service: Service) : Vie
     }
 
     private fun getVillageList() {
-        viewModelScope.launch{
-            val villageList = service.getVillageList()
-            if (villageList.isSuccessful) {
-                if (villageList.body()!=null) {
-                    Cache.villages = villageList.body()!!.data.villages
+        if (WifiService.instance.isOnline()) {
+            viewModelScope.launch {
+                val villageList = service.getVillageList()
+                if (villageList.isSuccessful) {
+                    if (villageList.body() != null) {
+                        Cache.villages = villageList.body()!!.data.villages
+                    }
                 }
-            }
 
+            }
         }
     }
 
     private fun getComplaintCategory() {
-        viewModelScope.launch{
-            val villageList = service.getComplaintCategory()
-            if (villageList.isSuccessful) {
-                if (villageList.body()!=null) {
-                    Cache.complaintCategory = villageList.body()!!.data
+        if (WifiService.instance.isOnline()) {
+            viewModelScope.launch {
+                val villageList = service.getComplaintCategory()
+                if (villageList.isSuccessful) {
+                    if (villageList.body() != null) {
+                        Cache.complaintCategory = villageList.body()!!.data
+                    }
                 }
-            }
 
+            }
         }
     }
 
     private fun getTotalCount() {
-        viewModelScope.launch{
-            state.value = Status.Progress
-            viewModelScope.launch(Dispatchers.Main) {
-                val login = service.getTotalCount()
-                if (login.isSuccessful) {
-                    if (login.body() != null) {
-                        state.value = Status.SuccessDashboard(login.body()!!.data[0])
-                    } else {
+        if (WifiService.instance.isOnline()) {
+            viewModelScope.launch {
+                state.value = Status.Progress
+                viewModelScope.launch(Dispatchers.Main) {
+                    val login = service.getTotalCount()
+                    if (login.isSuccessful) {
                         if (login.body() != null) {
-                            state.value = Status.ErrorLogin(login.body()!!.messages)
+                            state.value = Status.SuccessDashboard(login.body()!!.data[0])
                         } else {
-                            state.value = Status.ErrorLogin(login.errorBody().toString())
+                            if (login.body() != null) {
+                                state.value = Status.ErrorLogin(login.body()!!.messages)
+                            } else {
+                                state.value = Status.ErrorLogin(login.errorBody().toString())
+                            }
                         }
                     }
                 }
+
             }
+        }else{
+            state.value = Status.ErrorLogin(Cache.NO_INTERNET)
         }
     }
 

@@ -20,4 +20,7 @@ object Cache {
     var complaintCategory: ArrayList<CategoryModel> = arrayListOf()
     var coordinateList: List<CoordinateModel> = arrayListOf()
     var msgList: ArrayList<MessageModel> = arrayListOf()
+
+
+    const val NO_INTERNET: String = "No Internet Connection"
 }

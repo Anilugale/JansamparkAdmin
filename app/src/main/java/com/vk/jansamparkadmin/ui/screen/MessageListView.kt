@@ -27,6 +27,7 @@ import androidx.navigation.NavHostController
 import com.google.gson.Gson
 import com.vk.jansamparkadmin.Cache
 import com.vk.jansamparkadmin.R
+import com.vk.jansamparkadmin.WifiService
 import com.vk.jansamparkadmin.model.Admin
 import com.vk.jansamparkadmin.model.MessageListReqModel
 import com.vk.jansamparkadmin.model.MessageModel
@@ -64,7 +65,9 @@ fun MessageListView(navigator: NavHostController) {
         modifier = Modifier.background(color = MaterialTheme.colors.background),
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                navigator.navigate(Screens.AddMessage.route)
+                if (WifiService.instance.isOnline()) {
+                    navigator.navigate(Screens.AddMessage.route)
+                }
             }) {
                 Icon(Icons.Outlined.AddCircle, contentDescription = "")
             }

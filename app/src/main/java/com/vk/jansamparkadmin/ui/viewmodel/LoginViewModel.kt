@@ -2,6 +2,8 @@ package com.vk.jansamparkadmin.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vk.jansamparkadmin.Cache
+import com.vk.jansamparkadmin.WifiService
 import com.vk.jansamparkadmin.model.*
 import com.vk.jansamparkadmin.service.Service
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,25 +20,27 @@ class LoginViewModel @Inject constructor(private val service: Service) : ViewMod
     val stateExpose = state.asStateFlow()
     var isProcess = false
     fun login(loginReq: LoginReqModel) {
-        viewModelScope.launch (Dispatchers.IO) {
-            state.value = Status.Progress
-            isProcess = true
-            viewModelScope.launch(Dispatchers.Main) {
-
-                kotlin.runCatching {
-                     service.userLogin(loginReq)
-                }.onSuccess {
-                    if (it.body() != null && it.body()!!.data!=null) {
-                        state.value = Status.SuccessUser(it.body()!!.data)
-                    }else{
-                        state.value = Status.ErrorLogin(it.body()!!.messages)
+        if (WifiService.instance.isOnline()) {
+            viewModelScope.launch(Dispatchers.IO) {
+                state.value = Status.Progress
+                isProcess = true
+                viewModelScope.launch(Dispatchers.Main) {
+                    kotlin.runCatching {
+                        service.userLogin(loginReq)
+                    }.onSuccess {
+                        if (it.body() != null && it.body()!!.data != null) {
+                            state.value = Status.SuccessUser(it.body()!!.data)
+                        } else {
+                            state.value = Status.ErrorLogin(it.body()!!.messages)
+                        }
+                    }.onFailure {
+                        state.value = Status.ErrorLogin(it.message!! + "")
                     }
-                }.onFailure {
-                    state.value = Status.ErrorLogin(it.message!!+"")
+                    isProcess = false
                 }
-
-                isProcess = false
             }
+        }else{
+            state.value = Status.ErrorLogin(Cache.NO_INTERNET)
         }
     }
 

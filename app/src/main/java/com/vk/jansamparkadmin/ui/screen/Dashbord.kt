@@ -49,12 +49,20 @@ fun Dashboard(navigator: NavHostController) {
 
             }
             is Status.ErrorLogin -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it),
+                    contentAlignment = Alignment.Center
+                ) {
                     Text(text = uiState.msg)
                 }
             }
             Status.Progress -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it),
+                    contentAlignment = Alignment.Center
+                ) {
                     CircularProgressIndicator()
                 }
             }
