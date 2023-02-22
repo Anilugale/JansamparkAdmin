@@ -52,6 +52,41 @@ fun BottomNavigationBar(navController: NavHostController) {
 
         // Bottom nav items we declared
         // Place the bottom nav items
+
+        BottomNavigationItem(
+
+            // it currentRoute is equal then its selected route
+            selected = currentRoute == Screens.DailyVisit.route,
+
+            // navigate on click
+            onClick = {
+                navController.navigate(Screens.DailyVisit.route) {
+                    popUpTo(0)
+                }
+            },
+
+            // Icon of navItem
+            icon = {
+
+                Icon(
+                    imageVector = Screens.DailyVisit.icon!!,
+                    contentDescription = stringResource(id = R.string.daily_visit)
+                )
+            },
+
+            // label
+            label = {
+                Text(
+                    text = stringResource(id = R.string.dashboard),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            },
+            alwaysShowLabel = false
+        )
+
+
+
         BottomNavigationItem(
 
             // it currentRoute is equal then its selected route
@@ -165,8 +200,8 @@ fun rememberDatePicker(OnClose: (date: String,time:String) -> Unit, OnCancel: ()
         context,
         R.style.DatePickerDialogTheme,
         { _, year: Int, month: Int, dayOfMonth: Int ->
-            println("$year, $month, $dayOfMonth")
-            OnClose("$year-$month-$dayOfMonth","$year$month$dayOfMonth")
+            println("$year, ${month.inc()}, $dayOfMonth")
+            OnClose("$year-${month.inc()}-$dayOfMonth","$year${month.inc()}$dayOfMonth")
         },
         mYear, mMonth, mDay
     )

@@ -37,6 +37,8 @@ import com.vk.jansamparkadmin.ui.theme.FontColor1Dark
 import com.vk.jansamparkadmin.ui.theme.FontColor2
 import com.vk.jansamparkadmin.ui.viewmodel.LoginViewModel
 import com.vk.jansamparkadmin.ui.viewmodel.Status
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -91,9 +93,12 @@ fun LoginScreen(navigator: NavHostController?) {
                 if (value.user.size == 1) {
                     sharedPreferences.edit().putBoolean("isLogin", true).apply()
                     sharedPreferences.edit().putString("user", Gson().toJson(value.user[0])).apply()
-                    navigator?.navigate(Screens.Dashboard.route)
+                    navigator?.navigate(Screens.DailyVisit.route)
                 }
             }
+        }
+        else->{
+
         }
     }
 

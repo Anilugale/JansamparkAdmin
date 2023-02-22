@@ -44,4 +44,8 @@ interface Service {
 
     @POST("api/closecomplaint")
     suspend fun closeComplaint(@Body model: CloseComplaintReq): Response<MessageListResponse>
+
+
+    @POST("/api/getdailyvisitbydate")
+    suspend fun getDailyVisitOfCoordinator(@Body model: DailyVisitReq): Response<DailyVisitResponseModel>
 }

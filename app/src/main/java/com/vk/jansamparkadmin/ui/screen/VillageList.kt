@@ -62,9 +62,7 @@ fun VillageList(navigator: NavHostController?) {
             vModel
         }
         val uiState = rememberVm.stateExpose.collectAsState().value
-        Column {
-
-
+        Column (modifier = Modifier.padding(it)){
             when (uiState) {
                 Status.Empty -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
